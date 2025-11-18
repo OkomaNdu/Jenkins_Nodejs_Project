@@ -45,7 +45,9 @@ pipeline {
         }
         stage("deploy") {
             steps {
-                gv.deployApp(params.VERSION)
+               script {
+                   gv.deployApp(params.VERSION)
+               }
             }
         }
     }
