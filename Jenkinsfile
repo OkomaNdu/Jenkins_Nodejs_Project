@@ -1,11 +1,18 @@
 
 pipeline {
     agent any
+    tools {
+     nodejs 'node'
+    }
     stages {
         stage("test") {
             steps {
                  script{
+                   dir('app') {
                    echo "Testing the application..."
+                   sh 'npm install'
+                   sh 'npm test'
+                   }
                  }
             }
         }
