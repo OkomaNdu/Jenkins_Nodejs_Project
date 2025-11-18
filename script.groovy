@@ -17,7 +17,7 @@ def buildImage() {
     }
 }
 def deployApp(version) {
-    echo 'build the application...'
+    echo 'starting deployment...'
     echo "deploying version ${version}"
 }
 return this
