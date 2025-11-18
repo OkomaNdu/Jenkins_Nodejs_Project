@@ -1,13 +1,27 @@
+def gv
+
 pipeline {
     agent any
+    tools {
+      nodejs 'node'
+    }
     parameters {
         choice(name: 'VERSION', choices: ['1.1.0', '1.2.0', '1.3.0'], description: '')
         booleanParam(name: 'executeTests', defaultValue: true, description: '')
     }
     stages {
-        stage("build") {
+        stage("init") {
+           steps {
+              script{
+                 gv = load "script.groovy"
+              }
+           }
+        }
+        stage("build jar") {
             steps {
-                echo 'building the application...'
+               script {
+                 gv.buildJar()
+               }
             }
         }
         stage("test") {
@@ -17,13 +31,21 @@ pipeline {
                  }
             }
             steps {
-                echo 'testing the application...'
+               script {
+                   gv.testApp()
+                }
+            }
+        }
+        stage("build image") {
+            steps {
+                script{
+                    gv.buildImage()
+                }
             }
         }
         stage("deploy") {
             steps {
-                echo 'deploying the application...'
-                echo "deploying version ${params.VERSION}"
+                gv. deployApp(param.VERSION)
             }
         }
     }
