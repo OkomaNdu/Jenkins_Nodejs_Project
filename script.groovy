@@ -11,9 +11,9 @@ def testApp() {
 def buildImage() {
     echo "building the docker image..."
     withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-        sh 'docker build -t docker-hub-id/myapp:node-2.0 .'
+        sh 'docker build -t docker-hub-id/myapp:${IMAGE_NAME} .'
         sh 'echo $PASS | docker login -u $USER --password-stdin'
-        sh 'docker push docker-hub-id/myapp:node-2.0'
+        sh 'docker push docker-hub-id/myapp:${IMAGE_NAME}'
     }
 }
 def deployApp(version) {
