@@ -14,7 +14,6 @@ def buildImage() {
             sh "docker build -t ndubuisip/demo-app:${IMAGE_NAME} ."
             sh 'echo $PASS | docker login -u $USER --password-stdin'
             sh "docker push ndubuisip/demo-app:${IMAGE_NAME}"
-        }
     }
 }
 def deployApp(version) {
