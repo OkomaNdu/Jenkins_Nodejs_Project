@@ -43,7 +43,7 @@ pipeline {
         stage("build image") {
             steps {
                 script{
-                  buildImage()
+                  buildImage 'ndubuisip/demo-app:node-3.0'
                 }
             }
         }
