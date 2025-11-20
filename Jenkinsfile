@@ -1,32 +1,55 @@
-
 pipeline {
     agent any
     tools {
-     nodejs 'node'
+        nodejs "node"
     }
     stages {
-        stage("test") {
+        stage('increment version') {
             steps {
-                 script{
-                   dir('app') {
-                   echo "Testing the application..."
-                   sh 'npm install'
-                   sh 'npm test'
-                   }
-                 }
+                script {
+                    # enter app directory, because that's where package.json is located
+                    dir("app") {
+                        sh "npm version minor —no-git-tag-version"
+                        def packageJson = readJSON file: 'package.json'
+                        def version = packageJson.version
+                        env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+                    }
+                }
             }
         }
-        stage("build") {
+        stage('Run tests') {
             steps {
                script {
-                   echo "Building the application..."
+                    # enter app directory, because that's where package.json and tests are located
+                    dir("app") {
+                        # install all dependencies needed for running tests
+                        sh "npm install"
+                        sh "npm run test"
+                    } 
                }
             }
         }
-        stage("deploy") {
+        stage('Build and Push docker image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', usernameVariable: 'USER', passwordVariable: 'PASS')]){
+                    sh "docker build -t ndubuisip/demo-app:${IMAGE_NAME} ."
+                    sh 'echo $PASS | docker login -u $USER --password-stdin'
+                    sh "docker push ndubuisip/demo-app:${IMAGE_NAME}"
+                }
+            }
+        }
+        stage('commit version update') {
             steps {
                 script {
-                   echo "Deploying the application..."
+                    withCredentials([usernamePassword(credentialsId: 'GitHub-Credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+
+                        sh 'git config --global user.email "ndu2okoma@gmail.com"'
+                        sh 'git config --global user.name "OkomaNdu"'
+                        sh 'git remote set-url origin https://$USER:$PASS@github.com/OkomaNdu/Jenkins_Nodejs_Project.git'
+                        sh 'git add .'
+                        sh 'git commit -m "ci: version bump"'
+                        sh 'git push origin HEAD:jenkins-jobs'
+                    }
                 }
             }
         }
