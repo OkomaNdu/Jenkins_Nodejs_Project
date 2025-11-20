@@ -39,7 +39,7 @@ pipeline {
         stage("build and image") {
             steps {
                 script{
-                    gv.buildImage()
+                    gv.buildImage(params.IMAGE_NAME)
                 }
             }
         }
