@@ -40,10 +40,12 @@ pipeline {
                 }
             }
         }
-        stage("build image") {
+        stage("build and push image") {
             steps {
                 script{
-                  buildImage 'ndubuisip/demo-app:node-3.0'
+                  buildImage 'ndubuisip/demo-app:node-4.0'
+                  dockerLogin()
+                  dockerPush 'ndubuisip/demo-app:node-4.0'
                 }
             }
         }
