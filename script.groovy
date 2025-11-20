@@ -8,12 +8,12 @@ def testApp() {
         sh 'npm test'
     }
 }
-def buildImage() {
+def buildImage(String imageName) {
     echo "building the docker image..."
     withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-            sh "docker build -t ndubuisip/demo-app:${IMAGE_NAME} ."
+            sh "docker build -t ndubuisip/demo-app:${imageName} ."
             sh 'echo $PASS | docker login -u $USER --password-stdin'
-            sh "docker push ndubuisip/demo-app:${IMAGE_NAME}"
+            sh "docker push ndubuisip/demo-app:${imageName}"
     }
 }
 def deployApp(version) {
