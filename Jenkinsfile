@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-library identifier: 'Jenkins_NodeJS_Shared_Library', retriever: modernSCM([
+library identifier: 'Jenkins_NodeJS_Shared_Library@master', retriever: modernSCM([
         $class: 'GitSCMSource',
         remote: 'https://github.com/OkomaNdu/Jenkins_NodeJS_Shared_Library.git',
         credentialsId: 'GitHub-Credentials'
