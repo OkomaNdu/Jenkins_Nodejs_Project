@@ -11,9 +11,11 @@ def testApp() {
 def buildImage() {
     echo "building the docker image..."
     withCredentials([usernamePassword(credentialsId: 'docker-hub-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-        sh 'docker build -t ndubuisip/demo-app:node-1.0 .'
-        sh 'echo $PASS | docker login -u $USER --password-stdin'
-        sh 'docker push ndubuisip/demo-app:node-1.0'
+        dir('app') {
+            sh 'docker build -t ndubuisip/demo-app:node-1.0 .'
+            sh 'echo $PASS | docker login -u $USER --password-stdin'
+            sh 'docker push ndubuisip/demo-app:node-1.0'
+        }
     }
 }
 def deployApp(version) {
